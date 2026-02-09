@@ -16,25 +16,15 @@ export const listMatchesQuerySchema = z.object({
 export const matchIdParamSchema = z.object({
   id: z.coerce.number().int().positive(),
 });
-
+const isoDateString = z.iso.datetime()
 // Schema for creating a new match
 export const createMatchSchema = z
   .object({
     sport: z.string().min(1, 'Sport is required and cannot be empty'),
     homeTeam: z.string().min(1, 'Home team is required and cannot be empty'),
     awayTeam: z.string().min(1, 'Away team is required and cannot be empty'),
-    startTime: z
-      .string()
-      .refine(
-        (val) => !isNaN(Date.parse(val)),
-        'startTime must be a valid ISO date string'
-      ),
-    endTime: z
-      .string()
-      .refine(
-        (val) => !isNaN(Date.parse(val)),
-        'endTime must be a valid ISO date string'
-      ),
+    startTime: isoDateString,
+    endTime: isoDateString,
     homeScore: z.coerce.number().int().nonnegative().optional(),
     awayScore: z.coerce.number().int().nonnegative().optional(),
   })

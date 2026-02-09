@@ -10,7 +10,7 @@ const MAX_LIMIT = 100; // Maximum limit for listing matches
 matchRouter.get('/', async (req, res) => {
   const parsed = listMatchesQuerySchema.safeParse(req.query);
   if (!parsed.success) {
-    return res.status(400).json({ error: "Invalid query parameters", details: JSON.stringify(parsed.error) });
+    return res.status(400).json({ error: "Invalid query parameters", details: parsed.error.issues });
   }
   const limit = Math.min(parsed.data.limit || 20, MAX_LIMIT); // Default limit to 20 if not provided, max 100
 
@@ -18,7 +18,6 @@ matchRouter.get('/', async (req, res) => {
     const matchesList = await db.select().from(matches).orderBy(desc(matches.createdAt)).limit(limit);
     res.status(200).json({ matchesList });
   } catch (error) {
-    console.log("Error fetching matches:", error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
@@ -27,7 +26,7 @@ matchRouter.post('/', async (req, res) => {
   const parsed = createMatchSchema.safeParse(req.body);
   
   if (!parsed.success) {
-    return res.status(400).json({ error: "Invalid request data", details: JSON.stringify(parsed.error) });
+    return res.status(400).json({ error: "Invalid request data", details: parsed.error.issues });
   }
   
   try {
@@ -46,7 +45,6 @@ matchRouter.post('/', async (req, res) => {
     ).returning();
     res.status(201).json({ data: newMatch });
   } catch (error) {
-    console.log("Error creating match:", error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
