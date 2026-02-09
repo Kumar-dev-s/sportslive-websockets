@@ -46,9 +46,3 @@ export const commentary = pgTable('commentary', {
   tags: text('tags'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
-
-// Export inferred types for type-safe operations
-export const matchSelectSchema = matches.$inferSelect;
-export const matchInsertSchema = matches.$inferInsert;
-export const commentarySelectSchema = commentary.$inferSelect;
-export const commentaryInsertSchema = commentary.$inferInsert;
